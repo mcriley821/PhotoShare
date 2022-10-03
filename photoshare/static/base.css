@@ -1,0 +1,16 @@
+.toast-container {
+    position: fixed;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.toast {
+    width: 100%;
+}
+
+.box-shadow { 
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); 
+}

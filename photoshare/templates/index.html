@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% set active_page = "sitemap.index" %}
+{% block title %}Charley & Shelby's Wedding Album{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% endblock %}
+{%- block content %}
+<section class="jumbotron text-center border-bottom border-2">
+  <div class="container">
+    <h1 class="jumbotron-heading">Charley & Shelby's Wedding Album</h1>
+    <p class="lead text-muted">
+      Explore all the photos taken at our wedding.
+      Please take the time to upload any photos you took, 
+      so that others can view and download them too!
+    </p>
+    <p>
+      <a href="{{ url_for('sitemap.upload') }}" class="btn btn-primary my-2">Upload</a>
+      <a href="{{ url_for('sitemap.album', page=1) }}" class="btn btn-secondary my-2">All Photos</a>
+    </p>
+  </div>
+</section>
+<div class="container text-center p-3">
+  <strong class="lead"><u>Most recent uploads</u></strong>
+</div>
+{%- if cards|length != 0 %}
+{%- for x in cards %} 
+<div class="album bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow">
+          <img class="card-img-top" src="{{ url_for('sitemap.uploads', filename=x["source_path"]) }}"/>
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <a role="button" href="{{ url_for('sitemap.uploads', filename=x["source_path"]) }}" class="btn btn-sm btn-outline-secondary" download>
+                  Download
+                </a>
+              </div>
+              <small class="text-muted">{{ x["created"] }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endfor %}
+{%- else %}
+<section class="jumbotron text-center">
+  <div class="container">
+    <p class="lead text-muted">Nothing has been uploaded yet. Please be first!</p>
+  </div>
+</section>
+{%- endif %}
+
+{%- endblock %}
+

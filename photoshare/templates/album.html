@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% set active_page = "sitemap.album" %}
+{% block title %}Album{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='album.css') }}">
+{% endblock %}
+{% block content %} 
+{% if cards|length > 0 %}
+<nav>
+  <ul class="pagination justify-content-center">
+    <li class="page-item{% if active_index == 1 %} disabled{% endif %}">
+      <a class="page-link" href="{{ url_for('sitemap.album', page=active_index - 1) }}">
+        <span>&laquo;</span>
+      </a>
+    </li>
+    {%- for i in page_range %}
+    {%- if loop.first and i != 1 %}
+    <li class="page-item disabled">
+      <a class="page-link">...</a>
+    </li>
+    {%- endif -%}
+    <li class="page-item{% if i == active_index %} active{% endif %}">
+      <a class="page-link" href="{{ url_for('sitemap.album', page=i) }}">{{ i }}</a>
+    </li>
+    {%- if loop.last and i < page_max %}
+    <li class="page-item disabled">
+      <a class="page-link">...</a>
+    </li>
+    {%- endif -%}
+    {% endfor -%}
+    <li class="page-item{% if active_index == page_max %} disabled{% endif %}">
+      <a class="page-link" href="{{ url_for('sitemap.album', page=active_index + 1) }}">
+        <span>&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
+{%- if cards|length != 0 %}
+{%- for x in cards %} 
+<div class="album bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card mb-4 box-shadow">
+          <img class="card-img-top" src="{{ url_for('sitemap.uploads', filename=x["source_path"]) }}"/>
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <a role="button" href="{{ url_for('sitemap.uploads', filename=x["source_path"]) }}" class="btn btn-sm btn-outline-secondary" download>
+                  Download
+                </a>
+              </div>
+              <small class="text-muted">{{ x["created"] }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endfor %}
+{%- else %}
+<section class="jumbotron text-center">
+  <div class="container">
+    <p class="lead text-muted">Nothing has been uploaded yet. Please be first!</p>
+    <a class="btn btn-primary" href="{{ url_for('sitemap.upload') }}">Upload</a>
+  </div>
+</section>
+{%- endif %}
+{% if cards|length > 0 %}
+<nav>
+  <ul class="pagination justify-content-center">
+    <li class="page-item{% if active_index == 1 %} disabled{% endif %}">
+      <a class="page-link" href="{{ url_for('sitemap.album', page=active_index - 1) }}">
+        <span>&laquo;</span>
+      </a>
+    </li>
+    {%- for i in page_range %}
+    {%- if loop.first and i != 1 %}
+    <li class="page-item disabled">
+      <a class="page-link">...</a>
+    </li>
+    {%- endif -%}
+    <li class="page-item{% if i == active_index %} active{% endif %}">
+      <a class="page-link" href="{{ url_for('sitemap.album', page=i) }}">{{ i }}</a>
+    </li>
+    {%- if loop.last and i < page_max %}
+    <li class="page-item disabled">
+      <a class="page-link">...</a>
+    </li>
+    {%- endif -%}
+    {% endfor -%}
+    <li class="page-item{% if active_index == page_max %} disabled{% endif %}">
+      <a class="page-link" href="{{ url_for('sitemap.album', page=active_index + 1) }}">
+        <span>&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+{% endif %}
+{%- endblock %}

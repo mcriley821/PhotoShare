@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% set active_page = "sitemap.upload" %}
+{% block title %}Upload{% endblock %}
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='upload.css') }}">
+{% endblock %}
+{% block content %} 
+<div class="container p-3 text-center">
+  <form action="{{ url_for('sitemap.post_upload') }}" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+      <input type="file" name="files" accept="image/*" class="form-control" id="fileUploads" multiple>
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-primary">Upload</button>
+    </div>
+  </form>
+</div>
+{%- endblock %}
