@@ -1,22 +1,15 @@
+import time
+import math
+
 from flask import (Blueprint, render_template, url_for, g, request, redirect,
                    flash, current_app, send_from_directory)
 from werkzeug.datastructures import FileStorage
 
 from photoshare.image_database import get_database
-from os.path import basename, splitext, exists, abspath
-from hashlib import sha256
-from base64 import urlsafe_b64encode
-
-from os.path import join as joinpath
-
-from itertools import cycle
-from math import ceil
+from os.path import basename, splitext, exists, abspath, join as joinpath
 
 
 blueprint = Blueprint('sitemap', __name__, url_prefix='/')
-
-
-HEX_CYCLE = cycle("0123456789abcdef")
 
 
 @blueprint.route("/")
@@ -51,15 +44,16 @@ def post_upload():
     if not files:
         flash("No files selected...")
         return redirect(url_for("sitemap.upload"))
-    
-    files = filter(is_file_allowed, files)
-    db = get_database()
-    for file in files:
-        ext = splitext(file.filename)[1]
-        digest = sha256(file.filename.encode()).digest()
-        uploads = current_app.config["UPLOADS_FOLDER"]
-        fname = urlsafe_b64encode(digest).decode() + ext
+
+    uploads = current_app.config["UPLOADS_FOLDER"]
+    for file in filter(is_file_allowed, files):
+        ext = splitext(file.filename)[1].lower()
+        if ext in  (".mov", ".mp4"):
+            fname = f"video_{time.time_ns():.0f}{ext}"
+        else:
+            fname = f"image_{time.time_ns():.0f}{ext}"
         try:
+            db = get_database()
             db.execute(
                 "INSERT INTO images (source_path) VALUES (?)", (fname,)
             )
@@ -82,7 +76,7 @@ def uploads(filename: str):
 def album():
     db = get_database()
     images = db.execute("SELECT * FROM images").fetchall()
-    page_max = ceil(len(images) / 25)
+    page_max = math.ceil(len(images) / 25)
     try: 
         requested_page = int(request.args.get("page"))
         if not 0 < requested_page <= page_max:
